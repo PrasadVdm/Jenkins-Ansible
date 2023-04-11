@@ -58,6 +58,30 @@ pipeline {
       	}
       }
 
+      stage("Ansible deploy to Stage") {
+        steps {
+          ansiblePlaybook([
+              playbook: 'ansible/site.yml',
+              inventory: 'ansible/stage.inventory',
+              installation: 'ansible',
+              credentialsId: 'app01staginglogin',
+              colorized: true,
+              disableHostKeyChecking: true,
+              extraVars: [
+                  USER: "admin",
+                  PASS: "admin123",
+                  nexusip: "172.31.25.2",
+                  reponame: "jenkans-cicd",
+                  groupid: "STAGE",
+                  time: "${env.BUILD_TIMESTAMP}",
+                  build: "${env.BUILD_NUMBER}",
+                  artifactid: "vproapp",
+                  vprofile_version: "vproapp-${env.BUILD_NUMBER}-${env.BUILD_TIMESTAMP}.war"
+              ]
+              ])
+        }
+      }
+
 
 
 
